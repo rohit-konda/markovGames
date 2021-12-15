@@ -40,7 +40,7 @@ class TestMultiMDP(unittest.TestCase):
         stDist = [1, 0]
         mdp = MDP(ParetoPrisonerReward, gamma, pdts, stDist)
         mg = self.MG
-        self.assertEqual(mg.J(jpol, -1), mdp.J(jpol))
+        self.assertEqual(mg.J(jpol, 'G'), mdp.J(jpol))
         self.assertNotEqual(mg.J(jpol, 0), mdp.J(jpol))
         self.assertEqual(mg.J(jpol, 1), mg.J(jpol, 0))
 

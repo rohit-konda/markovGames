@@ -113,7 +113,7 @@ class MDP():
         # calculate Advantage function given a policy (Policy).
         # returns [A(s, a) for all state, actions].
         aN = len(policy.acSet)
-        expandV = np.kron(self.V(policy), np.ones((aN,)))
+        expandV = np.repeat(self.V(policy), aN)
         Avec = self.Q(policy) - expandV
         return Avec
 
@@ -147,6 +147,6 @@ class MDP():
         # returns [\grad(s, a) for all s, a].
         dvDist = np.dot(self.discVisit(self.TS.genPtrans(policy)), self.stDist)
         aN = len(policy.acSet)
-        expandDV = np.kron(dvDist, np.ones((aN,)))
+        expandDV = np.repeat(dvDist, aN)
         Qvec = self.Q(policy)
-        return (1. / (1. - self.gamma)) * np.dot(expandDV, Qvec)
+        return (1. / (1. - self.gamma)) * np.multiply(expandDV, Qvec)

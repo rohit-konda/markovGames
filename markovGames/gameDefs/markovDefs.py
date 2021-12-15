@@ -44,25 +44,25 @@ class MultiMDP(MDP):
         self.globalReward = globalReward  # global reward R(s, a).
         self.rewardList = rewardList  # agent reward [r_i for agent i].
 
-    def Q(self, policyList, i=None):
+    def Q(self, jointPolicy, i=None):
         # calculate Q, i = agent id ; i='G' corresponds to global reward.
         self._deCentral(i)
-        return MDP.Q(self, JointPolicy(policyList))
+        return MDP.Q(self, jointPolicy)
 
-    def A(self, policyList, i=None):
+    def A(self, jointPolicy, i=None):
         # calculate A, i = agent id ; i='G' corresponds to global reward.
         self._deCentral(i)
-        return MDP.A(self, JointPolicy(policyList))
+        return MDP.A(self, jointPolicy)
 
-    def V(self, policyList, i=None):
+    def V(self, jointPolicy, i=None):
         # calculate V, i = agent id ; i='G' corresponds to global reward.
         self._deCentral(i)
-        return MDP.V(self, JointPolicy(policyList))
+        return MDP.V(self, jointPolicy)
 
-    def J(self, policyList, i=None):
+    def J(self, jointPolicy, i=None):
         # calculate J, i = agent id ; i='G' corresponds to global reward.
         self._deCentral(i)
-        return MDP.J(self, JointPolicy(policyList))
+        return MDP.J(self, jointPolicy)
 
     def _deCentral(self, i):
         # set reward function when i in {0, n-1} or 'G'.
@@ -74,17 +74,33 @@ class MultiMDP(MDP):
             rewardF = self.rewardF
         self.rewardF = rewardF
 
-    def avgVal(self, i, func, policyList):
-        #
-        notiPolicy = JointPolicy([p for j, p in enumerate(policyList) if j != i])
-        vali = func(notiPolicy, i)
-        return np.dot(vali, notiPolicy.toVec())
+    def avgVal(self, saValPairs, jointPolicy, i):
+        # 
+        # saPairs = jointPolicy.saPairs()
+        # ST = self.TS.states
+        # AC = jointPolicy.acSet
 
-    def gradJ(self, i, policyList):
-        ### TODO ###
-        jPolicy = JointPolicy(policyList)
-        dvDist = np.dot(self.discVisit(self.TS.genPtrans(jPolicy)), self.stDist)
-        aN = len(policyList[i].acSet)
-        expandDV = np.kron(dvDist, np.ones((aN,)))
-        Qvec = self.avgVal(i, self.Q, policyList)
-        return (1. / (1. - self.gamma)) * np.dot(expandDV, Qvec)
+        # for s in ST:
+
+        # np.reshape(saValPairs, )
+        # np.zeros((a, ai))
+        # [[join]]
+
+        # _pactions = 
+        # vali = func(notiPolicy, i)
+        # return np.dot(vali, notiPolicy.toVec())
+        # dictSA = dict(zip(jointPolicy.saPairs(), saValPairs))
+        # print(dic)
+        pass
+
+    def gradJ(self, i, jointPolicy):
+        # calculate gradient given a policy (Policy) and agent i.
+        # returns [\grad(s, a_i) for all s, a_i].
+        ptrans = self.TS.genPtrans(jointPolicy)
+        dvDist = np.dot(self.discVisit(ptrans), self.stDist)
+        policyI = jointPolicy.policyList[i]
+        aNi = len(policyI.acSet)
+        expandDV = np.repeat(dvDist, aNi)
+        Qvec = self.Q(jointPolicy, i)
+        Qavgi = self.avgVal(Qvec, jointPolicy, i)
+        return (1. / (1. - self.gamma)) * np.multiply(expandDV, Qavgi)

@@ -4,7 +4,8 @@
 # Licensed under the MIT License. See LICENSE file in the project root for full license information.
 
 """
-
+Example Game for 2 player Repeated Game Prisoner Game Scenario.
+If both players cooperate, they stay in state 1 otherwise they switch to state 2.
 """
 
 
@@ -12,6 +13,10 @@ from markovGames.gameDefs.mdpDefs import TS
 
 
 class PDTS(TS):
+    """
+    Transition sytem for prisoner dilemma - only action dependent.
+    """
+
     def __init__(self):
         TS.__init__(self, [1, 2])
 
@@ -31,6 +36,8 @@ class PDTS(TS):
 
 
 def ParetoPrisonerReward(s, a):
+    # greatest reward when cooperating, subreward when defecting
+    # using common interest.
     r = 0
     if a == ('C', 'C'):
         r = 3
@@ -43,6 +50,3 @@ def ParetoPrisonerReward(s, a):
         r += 2
 
     return r
-
-def ParetoPrisonerReward2(s, a):
-    return ParetoPrisonerReward(s, a) + 1

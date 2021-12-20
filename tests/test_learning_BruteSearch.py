@@ -4,6 +4,11 @@ from markovGames.examples.prisonerDilemma import *
 from markovGames.learning.bruteSearch import *
 
 
+def ParetoPrisonerReward2(s, a):
+    # additonal definition for reward for testing
+    return ParetoPrisonerReward(s, a) + 1
+
+
 pol1 = Policy([1, 2], [np.array([1, 0]), np.array([0, 1])], ['C', 'D'])
 pol2 = Policy([1, 2], [np.array([1, 0]), np.array([0, 1])], ['C', 'D'])
 
@@ -42,6 +47,7 @@ class TestBruteForce(unittest.TestCase):
         acSet1 = pol1.acSet
         acSet2 = pol2.acSet
         prodList = prodPolList(states, [acSet1, acSet2])
+        MG.deCentral('G')
         WMat = getPayoff(W, prodList)
         self.assertEqual(np.shape(WMat), (4, 4))
         self.assertEqual(WMat[1][1], MG.J(jpolExpl, -1))

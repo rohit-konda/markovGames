@@ -46,25 +46,25 @@ class MultiMDP(MDP):
 
     def Q(self, jointPolicy, i=None):
         # calculate Q, i = agent id ; i='G' corresponds to global reward.
-        self._deCentral(i)
+        self.deCentral(i)
         return MDP.Q(self, jointPolicy)
 
     def A(self, jointPolicy, i=None):
         # calculate A, i = agent id ; i='G' corresponds to global reward.
-        self._deCentral(i)
+        self.deCentral(i)
         return MDP.A(self, jointPolicy)
 
     def V(self, jointPolicy, i=None):
         # calculate V, i = agent id ; i='G' corresponds to global reward.
-        self._deCentral(i)
+        self.deCentral(i)
         return MDP.V(self, jointPolicy)
 
     def J(self, jointPolicy, i=None):
         # calculate J, i = agent id ; i='G' corresponds to global reward.
-        self._deCentral(i)
+        self.deCentral(i)
         return MDP.J(self, jointPolicy)
 
-    def _deCentral(self, i):
+    def deCentral(self, i):
         # set reward function when i in {0, n-1} or 'G'.
         if i == 'G':
             rewardF = self.globalReward

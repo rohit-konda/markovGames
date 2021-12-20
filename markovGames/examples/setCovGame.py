@@ -18,7 +18,7 @@ class SetCovTS(TS):
         TS.__init__(self, states)
 
     def ptrans(self, s, snext, a):
-        covRes = self.cov(a)
+        covRes = np.sum(a, axis=0)
         probs = [self.ptransR(j, s[j], snext[j], covRes[j]) for j in range(len(s))]
         return np.prod(probs)
 
@@ -26,9 +26,6 @@ class SetCovTS(TS):
         # j - index of resource, res - state of resource
         # resNext - state of next Resource, aRes - num agents covering resource
         raise NotImplementedError
-
-    def cov(self, a):
-        return np.sum(a, axis=0)
 
 
 class BinarySCTS(SetCovTS):
@@ -38,20 +35,23 @@ class BinarySCTS(SetCovTS):
 
     def ptransR(self, j, res, resNext, aRes):
         p = 1
-        if aRes > 0:
-            if resNext == self.baseState[j]:
-                return 1 - p
-            elif resNext == 0:
-                return p
-            else:
-                raise ValueError('not correct res')
+        if self.baseState[j] == 0:
+            return 1
         else:
-            if resNext == self.baseState[j]:
-                return p
-            elif resNext == 0:
-                return 1 - p
+            if aRes > 0:
+                if resNext == self.baseState[j]:
+                    return 1 - p
+                elif resNext == 0:
+                    return p
+                else:
+                    raise ValueError('not correct res')
             else:
-                raise ValueError('not correct res')
+                if resNext == self.baseState[j]:
+                    return p
+                elif resNext == 0:
+                    return 1 - p
+                else:
+                    raise ValueError('not correct res')
 
 
 def setCovR(s, a):

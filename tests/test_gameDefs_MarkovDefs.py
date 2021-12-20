@@ -2,6 +2,10 @@ import unittest
 from markovGames.gameDefs.markovDefs import *
 from markovGames.examples.prisonerDilemma import *
 
+def ParetoPrisonerReward2(s, a):
+    # additonal definition for reward for testing
+    return ParetoPrisonerReward(s, a) + 1
+
 
 pol1 = Policy([1, 2], [np.array([1, 0]), np.array([0, 1])], ['C', 'D'])
 pol2 = Policy([1, 2], [np.array([1, 0]), np.array([0, 1])], ['C', 'D'])
@@ -64,10 +68,10 @@ class TestMultiMDP(unittest.TestCase):
         self.assertNotEqual(mg.J(jpol, 0), mdp.J(jpol))
         self.assertEqual(mg.J(jpol, 1), mg.J(jpol, 0))
 
-    def test_avgVal(self):
-        mg = self.MG
-        Qvec = mg.Q(jpol, 0)
-        avgVal(Qvec, jpol, 0, mg.TS)
+    # def test_avgVal(self):
+    #     mg = self.MG
+    #     Qvec = mg.Q(jpol, 0)
+    #     avgVal(Qvec, jpol, 0, mg.TS)
 
     def setUp(self):
         greward = ParetoPrisonerReward
